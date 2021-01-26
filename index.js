@@ -59,6 +59,90 @@ function getNews(country) {
 	})
 }
 
+function fda() {
+	$('#main').html('')
+	$.ajax({
+		type: 'GET',
+		url:
+			'https://api.fda.gov/drug/event.json?api_key=VwV6GVBKrGlTQQ1cI7CdFwzgKRwttF4hHdRz5HpX&search=' +
+			$('#search').val(),
+		success: function (response) {
+			console.log(response)
+			let result = response.results
+			result.forEach((element) => {
+				let product = []
+				element.patient.drug.forEach((element) => {
+					product.push(element.medicinalproduct)
+				})
+				$('#main').append(`
+			        <div class="col-12 col-md-6 col-lg-4">
+			            <div class="card mx-auto" style="width: 18rem;">
+			                <div class="card-body">
+			                    <h5 class="card-title">${element.companynumb}</h5>
+                                <p class="card-text">
+                                    <ul>
+                                        <li>${
+											element.patient.reaction[0]
+												.reactionmeddrapt
+										}</li>
+                                        <li>${
+											element.patient.reaction[0]
+												.reactionmeddraversionpt
+										}</li>
+                                        <li>${
+											element.patient.reaction[0]
+												.reactionoutcome
+										}</li>
+                                    </ul>
+                                    
+			                    </p>
+                                <p class="card-text">
+                                    <h5>Medicinal Product</h5>
+                                    ${product.concat()}
+			                    </p>
+			                </div>
+			            </div>
+			        </div>
+                `)
+			})
+		},
+	})
+}
+
+function recipe() {
+	$('#main').html('')
+	$.ajax({
+		type: 'GET',
+		url:
+			'https://api.spoonacular.com/recipes/complexSearch?apiKey=4d9617e0d6714615a45b3af75282afb5&query=' +
+			$('#recipe').val(),
+		success: function (response) {
+			console.log(response)
+			let result = response.results
+			result.forEach((element) => {
+				$('#main').append(`
+			        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card mx-auto" style="width: 18rem;">
+                            <img src="${element.image}" class="card-img-top" alt="...">
+			                <div class="card-body">
+			                    <h5 class="card-title">${element.title}</h5>
+			                </div>
+			            </div>
+			        </div>
+                `)
+			})
+		},
+	})
+}
+
+$('#btnSearch').on('click', function () {
+	fda()
+})
+
+$('#btnRecipe').on('click', function () {
+	recipe()
+})
+
 // request data from API
 $('.nav-link').on('click', function (e) {
 	console.log(e)
